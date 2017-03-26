@@ -14,7 +14,7 @@ function [ x AA status, OuterLoop, TotalInnerLoops ] = ...
 show_hist = 0;
 
 % ===============================================================
-% Set to: 
+% Set verbosity to: 
 % 0 for no output
 % 1 for output in a hist matrix file
 % 2 for output printed to the console
