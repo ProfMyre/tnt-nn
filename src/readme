@@ -1,3 +1,17 @@
 In this directory you should find tnt-nn.m, the source file for the TNT-NN method.
 
+Run this matlab script as:
+x = tnt-nn(A, b);
 
+where A is the m x n matrix representing the system of equations, b is the 
+solution column vector (length m) of measured data, and x is the column 
+vector (length n) of parameters obtained to best fit the solution vector and 
+minimize the 2-norm of the solution residual.
+
+Additional parameters that can be supplied to tnt-nn() include:
+lambda: the Tikhonov regularization parameter
+rel_tol: a relative tolerance for comparaing solution improvement
+AA: the precalculated normal equations
+use_AA: a flag indicating to use AA (when set to 1)
+red_c: reduction constant for the active set
+exp_c: expansion constant for the active set
