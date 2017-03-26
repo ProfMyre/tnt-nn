@@ -13,6 +13,12 @@ function [ x AA status, OuterLoop, TotalInnerLoops ] = ...
     
 show_hist = 0;
 
+% ===============================================================
+% Set to: 
+% 0 for no output
+% 1 for output in a hist matrix file
+% 2 for output printed to the console
+% ===============================================================
 verbose = 0;
 if (verbose > 0) 
     hist = zeros(10000,6); % preallocate some space
