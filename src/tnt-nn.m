@@ -5,7 +5,7 @@
 % Minimize norm2(b - A * x) with constraints: x(i) >= 0
 % ===============================================================
 % Authors:	Erich Frahm, frahm@physics.umn.edu
-%			Joseph Myre, myre@stthomas.edu
+%		Joseph Myre, myre@stthomas.edu
 % ===============================================================
 
 function [ x AA status, OuterLoop, TotalInnerLoops ] = ...
