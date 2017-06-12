@@ -40,7 +40,8 @@ if ((mb ~= m) || (nb ~= 1))
 end
 
 % ===============================================================
-% Compute A'A one time.
+% Compute A'A one time for use as a preconditioner with the LS 
+% solver.
 % ===============================================================
 
 if (use_AA == 1)
@@ -255,6 +256,7 @@ end % Outer Loop
 
 return;
 end
+
 % ====================================================================
 % Compute a new Cholesky factor after deletion of some variables.
 % ====================================================================
@@ -287,7 +289,7 @@ else
         
         % =============================================================
         % This function is just a stripped version of Matlab's qrdelete.
-        % Stolen from:
+        % From:
         % http://pmtksupport.googlecode.com/svn/trunk/lars/larsen.m
         % =============================================================
         R(:,j) = []; % remove column j
