@@ -13,6 +13,43 @@ function [ x AA status, OuterLoop, TotalInnerLoops ] = ...
     
 show_hist = 0;
 
+% Check number of inputs.
+if(nargin >8)
+    error('TooManyInputs', ...
+        'requires at most 3 optional inputs');
+end
+
+% Fill in unset optional values.
+switch nargin
+    case 2
+        lambda = 0;
+        rel_tol = 0;
+        AA = 0;
+        use_AA = 0;
+        red_c = 0.2;
+        exp_c = 1.2;
+    case 3
+        rel_tol = 0;
+        AA = 0;
+        use_AA = 0;
+        red_c = 0.2;
+        exp_c = 1.2;
+    case 4
+        AA = 0;
+        use_AA = 0;
+        red_c = 0.2;
+        exp_c = 1.2;
+    case 5
+        use_AA = 0;
+        red_c = 0.2;
+        exp_c = 1.2;
+    case 6
+        red_c = 0.2;
+        exp_c = 1.2;
+    case 7
+        exp_c = 1.2;
+end
+
 % ===============================================================
 % Set verbosity to: 
 % 0 for no output
@@ -92,8 +129,7 @@ end
 binding_set = [];
 
 % ===============================================================
-% Compute a feasible solution using the unconstrained 
-% least-squares solver of your choice.
+% This sets up the unconstrained, core LS solver
 % ===============================================================
 [ score, x, residual, free_set, binding_set, ...
   AA, epsilon, dels, lps ] = lsq_solve(A, b, lambda, ...
@@ -253,58 +289,6 @@ while (1)
                 
     end % Inner Loop
 end % Outer Loop
-
-return;
-end
-
-% ====================================================================
-% Compute a new Cholesky factor after deletion of some variables.
-% ====================================================================
-% Author: Erich Frahm, frahm@physics.umn.edu
-% ====================================================================
-function R = cholesky_delete(R,BB,deletion_set)
-
-[ m n ] = size(R);
-[ r c ] = size(deletion_set);
-num_deletions = max(r,c);
-
-speed_fudge_factor = 0.001;
-if (num_deletions > (speed_fudge_factor * n))
-
-    % =============================================================
-    % Full Cholesky decomposition of BB (on GPUs).
-    % =============================================================
-    [R,p] = chol(BB);
-    if (p > 0)
-        % This should never happen because we have already added
-        % a sufficiently large "epsilon" to AA to do the
-        % nonnegativity tests required to create the deleted_set.
-        dummy_var = fail_here1; % fail_here1 is not defined.
-    end
-    
-else
-
-    for i=1:num_deletions
-        j = deletion_set(i);
-        
-        % =============================================================
-        % This function is just a stripped version of Matlab's qrdelete.
-        % From:
-        % http://pmtksupport.googlecode.com/svn/trunk/lars/larsen.m
-        % =============================================================
-        R(:,j) = []; % remove column j
-        n = size(R,2);
-        for k = j:n
-            p = k:k+1;
-            [G,R(p,k)] = planerot(R(p,k)); % remove extra element in col
-            if k < n
-                R(p,k+1:n) = G*R(p,k+1:n); % adjust rest of row
-            end
-        end
-        R(end,:) = []; % remove zero'ed out row
-        
-    end
-end
 
 return;
 end
