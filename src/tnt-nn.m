@@ -78,7 +78,9 @@ end
 
 % ===============================================================
 % Compute A'A one time for use as a preconditioner with the LS 
-% solver.
+% solver.  This is not necessary for all LS solvers.  Unless you 
+% need it for preconditioning it is unlikely you actually need 
+% this step.
 % ===============================================================
 
 if (use_AA == 1)
