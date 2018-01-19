@@ -1,4 +1,4 @@
-In this directory you should find tnt-nn.m and lsq_solve.m, the source files for the TNT-NN method.
+In this directory you should find tntnn.m and lsq_solve.m, the source files for the TNT-NN method.
 
 Run this matlab script as:
 x = tnt-nn(A, b);
