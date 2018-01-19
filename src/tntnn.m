@@ -9,7 +9,7 @@
 % ===============================================================
 
 function [ x AA status, OuterLoop, TotalInnerLoops ] = ...
-    tnt-nn ( A, b, lambda, rel_tol, AA, use_AA, red_c, exp_c)
+    tntnn ( A, b, lambda, rel_tol, AA, use_AA, red_c, exp_c)
     
 show_hist = 0;
 
