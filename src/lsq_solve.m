@@ -5,6 +5,7 @@
 % Minimize norm2(b - A * x)
 % ====================================================================
 % Author: Erich Frahm, frahm@physics.umn.edu
+%         Joseph Myre, myre@stthomas.edu
 % ====================================================================
 
 function [ score, x, residual, free_set, binding_set, ...
