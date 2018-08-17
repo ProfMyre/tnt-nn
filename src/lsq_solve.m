@@ -2,10 +2,9 @@
 % Least squares feasible solution using a preconditioned conjugate  
 % gradient least-squares solver.
 % ====================================================================
-% Minimize norm_2(b - A * x)
+% Minimize norm2(b - A * x)
 % ====================================================================
 % Author: Erich Frahm, frahm@physics.umn.edu
-%         Joseph Myre, myre@stthomas.edu
 % ====================================================================
 
 function [ score, x, residual, free_set, binding_set, ...
@@ -44,6 +43,28 @@ if (lambda > 0)
     end
 end
 
+% =============================================================
+% Cholesky decomposition.
+% =============================================================
+[R,p] = chol(BB); % O(n^3/3)
+while (p > 0)
+    % It may be necessary to add to the diagonal of B'B to avoid 
+    % taking the sqare root of a negative number when there are 
+    % rounding errors on a nearly singular matrix. That's still OK 
+    % because we just use the Cholesky factor as a preconditioner.
+    epsilon = epsilon * 10;
+    epsilon
+    AA = AA + (epsilon * eye(n));
+    BB = AA(free_set,free_set);
+    if (lambda > 0)
+        for i=1:numel(free_set)
+            BB(i,i) = BB(i,i) + (lambda*lambda);
+        end
+    end
+    clear R;
+    [R,p] = chol(BB); % O(n^3/3)
+end
+
 % ------------------------------------------------------------
 % Loop until the solution is feasible.
 % ------------------------------------------------------------
@@ -56,10 +77,14 @@ while (1)
     loops = loops + 1;
     
     % ------------------------------------------------------------
-    % Compute a feasible solution using the unconstrained 
-    % least-squares solver of your choice.
+    % Use PCGNR to find the unconstrained optimum in 
+    % the "free" variables.
     % ------------------------------------------------------------
-    reduced_x = your_lsq_solver(B, b);
+    [reduced_x k] = pcgnr(B,b,R);
+    
+    if( k > lsq_loops)
+        lsq_loops = k;
+    end
     
     % ------------------------------------------------------------
     % Get a list of variables that must be deleted.
@@ -130,6 +155,11 @@ while (1)
         end
     end
     
+    % ------------------------------------------------------------
+    % Compute R, the Cholesky factor.
+    % ------------------------------------------------------------
+    R = cholesky_delete(R,BB,deletion_set);
+    
 end
 
 %
@@ -141,6 +171,7 @@ end
 % ------------------------------------------------------------
 % Unscramble the column indices to get the full (unreduced) x.
 % ------------------------------------------------------------
+[m n] = size(A);
 x = zeros(n,1);
 x(free_set) = reduced_x;
 
