@@ -1,4 +1,6 @@
-In this directory you should find tntnn.m, lsq_solve.m, and pcgnr.m, the source files for the TNT-NN method.
+In this directory you should find tntnn.m, the source file for the TNT-NN method.  
+This file contains all associated functions and an implementation of the TNT 
+unconstrained least-squares method.
 
 Run this matlab script as:
 x = tntnn(A, b);
