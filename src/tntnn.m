@@ -42,10 +42,7 @@ status = 3; % unknown failure
 n = size(A,2);
 
 % Check the input vector size.
-if (size(b,1) ~= size(A,1) || size(b,2) ~= 1)
-    status = 2; % failure: vector is wrong size
-    return;
-end
+assert(size(b,1) == size(A,1) || size(b,2) == 1,'Vector and matrix sizes are not consistent');
 
 % ===============================================================
 % Compute A'A one time for use as a preconditioner with the LS 
@@ -54,17 +51,11 @@ end
 % this step.
 % ===============================================================
 
-if (use_AA == 1)
-    if isequal(size(AA),[n, n])
-        status = 2; % failure: matrix is wrong size
-        return;
-    end
-else
-    %tic
+if ~use_AA
     AA = A' * A; % one time
-    %toc
+else
+    assert(isequal(size(AA),[n,n]),'Vector and matrix sizes are not consistent')
 end
-
 % ===============================================================
 % AA is a symmetric and positive definite (probably) n x n matrix.
 % If A did not have full rank, then AA is positive semi-definite.
