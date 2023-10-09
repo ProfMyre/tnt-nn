@@ -6,15 +6,16 @@
 % ===============================================================
 % Authors:	Erich Frahm, frahm@physics.umn.edu
 %		    Joseph Myre, myre@stthomas.edu
+% Updated:  Vedad Babic, babicvedad@gmail.com
 % ===============================================================
 
-function [ x, AA, status, OuterLoop, TotalInnerLoops ] = ...
+function [ x, score, AA, status, OuterLoop, TotalInnerLoops ] = ...
     tntnn ( A, b, varargin)
     
 show_hist = 0;
 
 % Check number of inputs.
-assert(nargin<=8,'TooManyInputs requires at most 7 optional inputs')
+assert(nargin<=9,'TooManyInputs requires at most 8 optional inputs')
 % Fill in unset optional values.
 vars = [0, 0, 0, 0, 0, 0.2, 1.2];
 % Fill in set optional values.
