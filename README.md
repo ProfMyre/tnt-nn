@@ -22,3 +22,6 @@ If you use this software as supplied please cite the above papers.  The bibtex t
 }  
   
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.438158.svg)](https://doi.org/10.5281/zenodo.438158)
+
+# Update 2023-09-10
+The function has been updated to allow arbitrary constraining of the coefficients, both by value, and number of non-zero coefficients allowed.
