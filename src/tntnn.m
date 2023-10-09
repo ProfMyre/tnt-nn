@@ -148,7 +148,7 @@ while (1)
     % most attractive variables to insert.
     % ===============================================================
     grad_score = gradient(binding_set(insertion_set));
-    [ grad_list set_index ] = sort(grad_score, 'descend');
+    [~, set_index ] = sort(grad_score, 'descend');
     insertion_set = insertion_set(set_index);
 
     % ===============================================================
