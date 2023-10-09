@@ -9,7 +9,7 @@
 % Updated:  Vedad Babic, babicvedad@gmail.com
 % ===============================================================
 
-function [ x, score, AA, status, OuterLoop, TotalInnerLoops ] = ...
+function [ x, score, AA, OuterLoop, TotalInnerLoops ] = ...
     tntnn ( A, b, varargin)
     
 show_hist = 0;
@@ -36,7 +36,6 @@ if (verbose > 0)
 end
 
 x = 0;
-status = 3; % unknown failure
 
 % Get the input matrix size.
 n = size(A,2);
@@ -123,7 +122,6 @@ while (1)
     if isempty(insertion_set)
         % There were no changes that were feasible. 
         % We are done.
-        status = 0; % success 
         if (verbose > 0) 
             hist_index = hist_index+1;
             hist(hist_index,:) = [0, 0, 0, 0, 0, 0];
