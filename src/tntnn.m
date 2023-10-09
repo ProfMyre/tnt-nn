@@ -16,10 +16,10 @@ show_hist = 0;
 % Check number of inputs.
 assert(nargin<=8,'TooManyInputs requires at most 7 optional inputs')
 % Fill in unset optional values.
-vars = [0, 0, 0, 0, 0.2, 1.2];
+vars = [0, 0, 0, 0, 0, 0.2, 1.2];
 % Fill in set optional values.
 vars(1:length(varargin)) = cell2mat(varargin);
-[lambda, rel_tol, AA, use_AA, red_c, exp_c] = subsref(num2cell(vars), substruct('{}',{':'}));
+[min_coeff_val, lambda, rel_tol, AA, use_AA, red_c, exp_c] = subsref(num2cell(vars), substruct('{}',{':'}));
 
 
 % ===============================================================
@@ -92,7 +92,7 @@ binding_set = [];
 % ===============================================================
 [ score, x, residual, free_set, binding_set, ...
   AA, epsilon, ~, ~ ] = lsq_solve(A, b, lambda, ...
-  AA, epsilon, free_set, binding_set, n);
+  AA, epsilon, free_set, binding_set, n, min_coeff_val);
       
 % ===============================================================
 % Outer Loop.
@@ -184,7 +184,7 @@ while (1)
         % ===============================================================
         [ score, x, residual, free_set, binding_set, ...
           AA, epsilon, dels, lps ] = lsq_solve(A, b, lambda, ...
-          AA, epsilon, free_set, binding_set, insertions);
+          AA, epsilon, free_set, binding_set, insertions, min_coeff_val);
 
         % ===============================================================
         % Accumulate history info for algorithm tuning.
