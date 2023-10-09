@@ -11,6 +11,8 @@ vector (length n) of parameters obtained to best fit the solution vector and
 minimize the 2-norm of the solution residual.
 
 Additional parameters that can be supplied to tntnn() include:
+min_coeff_val: smallest allowed coefficient value (i.e. instead of constraining to non-zero solutions, we constrain ci > min_coeff_val)
+max_coeff: maximum number of allowed non-zero coefficients.
 lambda:   The Tikhonov regularization parameter
 rel_tol:  A relative tolerance for comparing solution improvement
 AA:       The precalculated normal equations
