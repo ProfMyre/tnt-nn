@@ -128,7 +128,7 @@ while (1)
     % ===============================================================
     % Are we done ?
     % ===============================================================
-    if (insertions == 0)
+    if isempty(insertion_set)
         % There were no changes that were feasible. 
         % We are done.
         status = 0; % success 
