@@ -37,12 +37,10 @@ BB = AA(free_set,free_set);
 % ------------------------------------------------------------
 % Adjust with Tikhonov regularization parameter lambda.
 % ------------------------------------------------------------
-if (lambda > 0)
-    for i=1:numel(free_set)
-        B(i,i) = B(i,i) + lambda;
-        BB(i,i) = BB(i,i) + (lambda*lambda);
-    end
-end
+B(1:length(free_set), 1:length(free_set)) = ...
+    B(1:length(free_set), 1:length(free_set)) + lambda;
+BB(1:length(free_set), 1:length(free_set)) = ...
+    BB(1:length(free_set), 1:length(free_set)) + lambda^2;
 
 % =============================================================
 % Cholesky decomposition.
@@ -57,11 +55,8 @@ while (p > 0)
     epsilon
     AA = AA + (epsilon * eye(n));
     BB = AA(free_set,free_set);
-    if (lambda > 0)
-        for i=1:numel(free_set)
-            BB(i,i) = BB(i,i) + (lambda*lambda);
-        end
-    end
+    BB(1:length(free_set), 1:length(free_set)) = ...
+        BB(1:length(free_set), 1:length(free_set)) + lambda^2;
     clear R;
     [R,p] = chol(BB); % O(n^3/3)
 end
@@ -81,7 +76,7 @@ while (1)
     % Use PCGNR to find the unconstrained optimum in 
     % the "free" variables.
     % ------------------------------------------------------------
-    [reduced_x k] = pcgnr(B,b,R);
+    [reduced_x, k] = pcgnr(B,b,R);
     
     if( k > lsq_loops)
         lsq_loops = k;
@@ -90,13 +85,8 @@ while (1)
     % ------------------------------------------------------------
     % Get a list of variables that must be deleted.
     % ------------------------------------------------------------
-    deletion_set = [];
-    for i=1:numel(free_set)
-        if (reduced_x(i) <= 0) 
-            deletion_set(end+1) = i;
-        end
-    end
-    
+    deletion_set = find(reduced_x <= 0);
+
     % ------------------------------------------------------------
     % If the current solution is feasible then quit.
     % ------------------------------------------------------------
@@ -109,7 +99,7 @@ while (1)
     % find the worst violators.
     % ------------------------------------------------------------
     x_score = reduced_x(deletion_set);
-    [ x_list set_index ] = sort(x_score, 'ascend');
+    [~, set_index] = sort(x_score, 'ascend');
     deletion_set = deletion_set(set_index);
     
     % ------------------------------------------------------------
@@ -125,7 +115,7 @@ while (1)
     % ------------------------------------------------------------
     % Move the variables from "free" to "binding".
     % ------------------------------------------------------------
-    binding_set = [ binding_set free_set(deletion_set) ];
+    binding_set = [binding_set, free_set(deletion_set)];
     free_set(deletion_set) = [];
     
     % ------------------------------------------------------------
@@ -143,18 +133,16 @@ while (1)
     % BB is a symmetric matrix that has a subset of rows and 
     % columns of AA. The free_set provides a map from the rows
     % and columns of BB to rows and columns of AA.
-    clear BB;
     BB = AA(free_set,free_set);
     
     % ------------------------------------------------------------
     % Adjust with Tikhonov regularization parameter lambda.
     % ------------------------------------------------------------
-    if (lambda > 0) 
-        for i=1:numel(free_set)
-            B(i,i) = B(i,i) + lambda;
-            BB(i,i) = BB(i,i) + (lambda*lambda);
-        end
-    end
+    B(1:length(free_set), 1:length(free_set)) = ...
+    B(1:length(free_set), 1:length(free_set)) + lambda;
+    BB(1:length(free_set), 1:length(free_set)) = ...
+        BB(1:length(free_set), 1:length(free_set)) + lambda^2;
+
     
     % ------------------------------------------------------------
     % Compute R, the Cholesky factor.
@@ -172,7 +160,7 @@ end
 % ------------------------------------------------------------
 % Unscramble the column indices to get the full (unreduced) x.
 % ------------------------------------------------------------
-[m n] = size(A);
+n = size(A,2);
 x = zeros(n,1);
 x(free_set) = reduced_x;
 
