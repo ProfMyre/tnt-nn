@@ -5,8 +5,8 @@
 % ====================================================================
 function R = cholesky_delete(R,BB,deletion_set)
 
-[ m n ] = size(R);
-[ r c ] = size(deletion_set);
+[~, n ] = size(R);
+[r, c ] = size(deletion_set);
 num_deletions = max(r,c);
 
 speed_fudge_factor = 0.001;
@@ -15,13 +15,13 @@ if (num_deletions > (speed_fudge_factor * n))
     % =============================================================
     % Full Cholesky decomposition of BB (on GPUs).
     % =============================================================
-    [R,p] = chol(BB); % O(n^3/3)
-    if (p > 0)
+    [R,~] = chol(BB); % O(n^3/3)
+%     if (p > 0)
         % This should never happen because we have already added
         % a sufficiently large "epsilon" to AA to do the
         % nonnegativity tests required to create the deleted_set.
-        dummy_var = fail_here1; % fail_here1 is not defined.
-    end
+%         dummy_var = fail_here1; % fail_here1 is not defined.
+%     end
     
 else
 
