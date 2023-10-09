@@ -218,7 +218,6 @@ while (1)
         if (insertions == 1)
             % The best feasible change did not improve the score. 
             % We are done.
-            status = 0; % success 
             if (verbose > 0) 
                 hist_index = hist_index+1;
                 hist(hist_index,:) = [1, 1, 1, 1, 1, 1];
