@@ -8,7 +8,7 @@
 % ====================================================================
 
 function [ x, k ] = pcgnr ( A, b, R )
-    [ m n ] = size(A);
+    n = size(A,2);
     x = zeros(n,1);
     r = b;
     r_hat = A' * r; % matrix_x_vector, O(mn)
