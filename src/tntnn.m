@@ -122,14 +122,8 @@ while (1)
     % ===============================================================
     % Check the gradient components.
     % ===============================================================
-    insertions = 0;
-    insertion_set = [];
-    for i=1:numel(binding_set)
-        if (gradient(binding_set(i)) > 0)
-            insertions = insertions + 1;
-            insertion_set(insertions) = i;
-        end
-    end
+
+    insertion_set = find(gradient(binding_set) > 0);
     
     % ===============================================================
     % Are we done ?
