@@ -10,7 +10,7 @@
 
 function [ score, x, residual, free_set, binding_set, ...
            AA, epsilon, del_hist, dels, loops, lsq_loops ] = lsq_solve ( A, b, lambda, ...
-           AA, epsilon, free_set, binding_set, deletions_per_loop, min_coeff_val)
+           AA, epsilon, free_set, binding_set, deletions_per_loop, min_coeff_val, max_coeff)
 
 % ------------------------------------------------------------
 % Put the lists in order.
@@ -85,8 +85,18 @@ while (1)
     % ------------------------------------------------------------
     % Get a list of variables that must be deleted.
     % ------------------------------------------------------------
+    % Values which do not fulfill min_coeff_val
     deletion_set = find(reduced_x <= min_coeff_val);
 
+    % delete the worst additional variables if they are too many i.e. > max_coeff
+    [x_score, set_index] = sort(reduced_x, 'ascend');
+    x_score(x_score<= min_coeff_val) = [];
+    set_index(x_score<= min_coeff_val) = [];
+
+    if length(x_score) > max_coeff
+        deletion_set = [deletion_set; set_index(1:(length(set_index)-max_coeff))];
+    end
+    
     % ------------------------------------------------------------
     % If the current solution is feasible then quit.
     % ------------------------------------------------------------

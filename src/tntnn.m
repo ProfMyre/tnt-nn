@@ -2,7 +2,7 @@
 % TNT-NN: A Fast Active Set Method for Solving Large Non-Negative 
 % Least Squares Problems.
 % ===============================================================
-% Minimize norm2(b - A * x) with constraints: x(i) >= 0
+% Minimize norm2(b - A * x) with constraints: x(i) >= min_coeff_val
 % ===============================================================
 % Authors:	Erich Frahm, frahm@physics.umn.edu
 %		    Joseph Myre, myre@stthomas.edu
@@ -17,10 +17,11 @@ show_hist = 0;
 % Check number of inputs.
 assert(nargin<=9,'TooManyInputs requires at most 8 optional inputs')
 % Fill in unset optional values.
-vars = [0, 0, 0, 0, 0, 0.2, 1.2];
+vars = [0, inf, 0, 0, 0, 0, 0.2, 1.2];
 % Fill in set optional values.
 vars(1:length(varargin)) = cell2mat(varargin);
-[min_coeff_val, lambda, rel_tol, AA, use_AA, red_c, exp_c] = subsref(num2cell(vars), substruct('{}',{':'}));
+[min_coeff_val, max_coeff, lambda, rel_tol, AA, use_AA, red_c, exp_c] = ...
+    subsref(num2cell(vars), substruct('{}',{':'}));
 
 
 % ===============================================================
@@ -34,8 +35,6 @@ if (verbose > 0)
     hist = zeros(10000,6); % preallocate some space
     hist_index = 0;     
 end
-
-x = 0;
 
 % Get the input matrix size.
 n = size(A,2);
@@ -83,7 +82,7 @@ binding_set = [];
 % ===============================================================
 [ score, x, residual, free_set, binding_set, ...
   AA, epsilon, ~, ~ ] = lsq_solve(A, b, lambda, ...
-  AA, epsilon, free_set, binding_set, n, min_coeff_val);
+  AA, epsilon, free_set, binding_set, n, min_coeff_val, max_coeff);
       
 % ===============================================================
 % Outer Loop.
@@ -157,6 +156,7 @@ while (1)
         if (insertions == 0)
             insertions = 1;
         end
+
         if (insertions > max_insertions)
             insertions = max_insertions;
         end
@@ -174,7 +174,7 @@ while (1)
         % ===============================================================
         [ score, x, residual, free_set, binding_set, ...
           AA, epsilon, dels, lps ] = lsq_solve(A, b, lambda, ...
-          AA, epsilon, free_set, binding_set, insertions, min_coeff_val);
+          AA, epsilon, free_set, binding_set, insertions, min_coeff_val, max_coeff);
 
         % ===============================================================
         % Accumulate history info for algorithm tuning.
